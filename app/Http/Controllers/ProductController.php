@@ -2,63 +2,80 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $limit = request()->query('limit', 10);
-        $products = [
-            (object) [
-                "id" => 1,
-                "name" => "Sapu",
-                "description" => "Ini sapu murah",
-                "price" => 10000,
-            ],
-            (object) [
-                "id" => 2,
-                "name" => "Kemonceng",
-                "description" => "Ini kemonceng",
-                "price" => 18000,
-            ],
-        ];
+        // "INI CODE PERTEMUAN PERTAMA"
+        // $limit = request()->query('limit', 10);
+        // $products = [
+        //     (object) [
+        //         "id" => 1,
+        //         "name" => "Sapu",
+        //         "description" => "Ini sapu murah",
+        //         "price" => 10000,
+        //     ],
+        //     (object) [
+        //         "id" => 2,
+        //         "name" => "Kemonceng",
+        //         "description" => "Ini kemonceng",
+        //         "price" => 18000,
+        //     ],
+        // ];
 
-        if ($limit < 2) { // misalnya limit nya value nya 1
-            return [
-                (object) [
-                    "name" => "Sapu",
-                    "description" => "Ini sapu murah",
-                    "price" => 10000,
-                ],
-            ];
-        }
+        // if ($limit < 2) { // misalnya limit nya value nya 1
+        //     return [
+        //         (object) [
+        //             "name" => "Sapu",
+        //             "description" => "Ini sapu murah",
+        //             "price" => 10000,
+        //         ],
+        //     ];
+        // }
+
+        $limit = request()->query('limit', 10);
+        // $products = DB::table('products')->limit($limit)->get();
+        $products = Product::limit($limit)->get();
 
         return $products;
     }
 
     public function show($productId)
     {
-        $products = [
-            (object) [
-                "id" => 1,
-                "name" => "Sapu",
-                "description" => "Ini sapu murah",
-                "price" => 10000,
-            ],
-            (object) [
-                "id" => 2,
-                "name" => "Kemonceng",
-                "description" => "Ini kemonceng",
-                "price" => 18000,
-            ],
-        ];
+        // "INI CODE PERTEMUAN PERTAMA"
+        // $products = [
+        //     (object) [
+        //         "id" => 1,
+        //         "name" => "Sapu",
+        //         "description" => "Ini sapu murah",
+        //         "price" => 10000,
+        //     ],
+        //     (object) [
+        //         "id" => 2,
+        //         "name" => "Kemonceng",
+        //         "description" => "Ini kemonceng",
+        //         "price" => 18000,
+        //     ],
+        // ];
 
-        $filteredProducts = array_filter($products, function ($product) use ($productId) {
-            return $product->id == $productId;
-        });
+        // $filteredProducts = array_filter($products, function ($product) use ($productId) {
+        //     return $product->id == $productId;
+        // });
 
-        return $filteredProducts;
+        // return $filteredProducts;
+
+        // $product = DB::table('products')->where('id', $productId)->first();
+        $product = Product::find($productId);
+
+        if (!$product) {
+            return ["message" => "Produk tidak ditemukan"];
+        }
+
+        return $product;
     }
 
     public function store(Request $request)
@@ -72,9 +89,48 @@ class ProductController extends Controller
         $product = [
             "name" => $request->input('name'),
             "description" => $request->input('description'),
-            "price" => (int) $request->input('price'),
+            "stock" => (int) $request->input('stock'),
+            "price" => $request->input('price'),
+            "status" => $request->input('status', 'active'),
         ];
 
+        DB::table('products')->insert($product);
+
         return $product;
+    }
+
+    public function update(Request $request, $id)
+    {
+        // dd($request->all());
+        $product = [
+            "name" => $request->input('name'),
+            "description" => $request->input('description'),
+            "stock" => $request->input('stock'),
+            "price" => $request->input('price'),
+            "status" => $request->input('status', 'active'),
+        ];
+
+        $saved = DB::table('products')->where('id', $id)->update($product);
+
+        $product = DB::table('products')->where('id', $id)->first();
+
+        if (!$product) {
+            return ["message" => "Data produk tidak ditemukan"];
+        }
+
+        return ["message" => "Berhasil mengupdate produk dengan id " . $id];
+    }
+
+    public function destroy($id)
+    {
+        $deleted = DB::table('products')->where('id', $id)->delete();
+
+        $product = DB::table('products')->where('id', $id)->first();
+
+        if (!$product) {
+            return ["message" => "Data produk tidak ditemukan"];
+        }
+
+        return ["message" => "Berhasil menghapus produk dengan id " . $id];
     }
 }
