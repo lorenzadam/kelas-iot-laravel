@@ -94,7 +94,8 @@ class ProductController extends Controller
             "status" => $request->input('status', 'active'),
         ];
 
-        DB::table('products')->insert($product);
+        // DB::table('products')->insert($product);
+        Product::create($product);
 
         return $product;
     }
@@ -110,26 +111,34 @@ class ProductController extends Controller
             "status" => $request->input('status', 'active'),
         ];
 
-        $saved = DB::table('products')->where('id', $id)->update($product);
+        // $saved = DB::table('products')->where('id', $id)->update($product);
 
-        $product = DB::table('products')->where('id', $id)->first();
+        // $product = DB::table('products')->where('id', $id)->first();
 
-        if (!$product) {
-            return ["message" => "Data produk tidak ditemukan"];
+        $selectedProduct = Product::find($id);
+
+        if (!$selectedProduct) {
+            return ["error" => "Data produk tidak ditemukan"];
         }
+
+        Product::find($id)->update($product);
 
         return ["message" => "Berhasil mengupdate produk dengan id " . $id];
     }
 
     public function destroy($id)
     {
-        $deleted = DB::table('products')->where('id', $id)->delete();
+        // $deleted = DB::table('products')->where('id', $id)->delete();
 
-        $product = DB::table('products')->where('id', $id)->first();
+        // $product = DB::table('products')->where('id', $id)->first();
+
+        $product = Product::find($id);
 
         if (!$product) {
-            return ["message" => "Data produk tidak ditemukan"];
+            return ["error" => "Data produk tidak ditemukan"];
         }
+
+        Product::find($id)->delete();
 
         return ["message" => "Berhasil menghapus produk dengan id " . $id];
     }
