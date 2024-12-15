@@ -3,8 +3,8 @@
 @section('content')
     <div class="container">
         <div class="py-4 d-flex justify-content-between align-items-center">
-            <h2>Data Device</h2>
-            <a href="/devices/create" class="btn btn-primary">Tambah</a>
+            <h2>Data Sensor</h2>
+            <a href="/sensors/create" class="btn btn-primary">Tambah</a>
         </div>
 
         @if (session('success'))
@@ -19,20 +19,22 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Serial Number</th>
-                        <th>Meta Data</th>
+                        <th>Nama Sensor</th>
+                        <th>Data</th>
+                        <th>Topic</th>
                         <th style="text-align: center;">#</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($devices as $device)
+                    @foreach ($sensors as $sensor)
                         <tr>
-                            <td>{{ ($devices->currentPage() - 1) * $devices->perPage() + $loop->index + 1 }}</td>
-                            <td>{{ $device->serial_number }}</td>
-                            <td>{{ $device->meta_data }}</td>
+                            <td>{{ ($sensors->currentPage() - 1) * $sensors->perPage() + $loop->index + 1 }}</td>
+                            <td>{{ $sensor->nama_sensor }}</td>
+                            <td>{{ $sensor->data }}</td>
+                            <td>{{ $sensor->topic }}</td>
                             <td>
                                 <div class="d-flex g-2 justify-content-center align-items-center">
-                                    <a href="/devices/edit/{{ $device->id }}" class="btn btn-sm btn-warning">
+                                    <a href="/sensors/edit/{{ $sensor->id }}" class="btn btn-sm btn-warning">
                                         Ubah
                                     </a>
                                     {{-- <form action="/devices/delete/{{ $device->id }}" method="post">
@@ -42,18 +44,18 @@
                                             Hapus
                                         </button>
                                     </form> --}}
-                                    <button type="button" class="btn btn-sm btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#modalDelete-{{ $device->id }}">
+                                    <button type="button" class="btn btn-sm btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#modalDelete-{{ $sensor->id }}">
                                         Hapus
                                     </button>
                                 </div>
                             </td>
                         </tr>
-                        @include('device.components.modal-delete')
+                        @include('sensor.components.modal-delete')
                     @endforeach
                 </tbody>
             </table>
             <div class="my-4">
-                {{ $devices->links('pagination::bootstrap-5') }}
+                {{ $sensors->links('pagination::bootstrap-5') }}
             </div>
         </div>
     </div>

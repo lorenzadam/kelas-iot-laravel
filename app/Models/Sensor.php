@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Device extends Model
+class Sensor extends Model
 {
     use HasFactory;
 
-    protected $table = 'devices';
+    protected $table = "sensors";
 
-    protected $fillable = ["serial_number", "meta_data"];
+    protected $fillable = [
+        "nama_sensor", "data", "topic",
+    ];
 }
