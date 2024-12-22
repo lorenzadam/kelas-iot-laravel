@@ -8,16 +8,18 @@ use App\Http\Controllers\UserController;
 use App\Http\Middleware\IsLogin;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    $name = request()->query('name', 'Tidak ada');
-    echo $name;
-    echo "<br />";
-    if ($name === 'Asep') {
-        echo "Welcome Asep";
-    } else {
-        echo "Welcome gatau namanya";
-    }
-});
+// Route::get('/', function () {
+//     $name = request()->query('name', 'Tidak ada');
+//     echo $name;
+//     echo "<br />";
+//     if ($name === 'Asep') {
+//         echo "Welcome Asep";
+//     } else {
+//         echo "Welcome gatau namanya";
+//     }
+// });
+
+Route::get('/', [DashboardController::class, 'publicDashboardView']);
 
 Route::get('/test', function () {
     $data = ["Apel", "Pisang", "Mangga"];
