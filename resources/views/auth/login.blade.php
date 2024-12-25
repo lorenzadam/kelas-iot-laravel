@@ -20,7 +20,7 @@
                                 @endforeach
                             </div>
                         @endif
-                        <form action="/login" method="post">
+                        <form action="/manual-login" method="post">
                             @csrf
                             @method('POST')
                             <div class="form-group mb-3">

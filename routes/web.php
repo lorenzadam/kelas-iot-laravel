@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\ProductController;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/', [DashboardController::class, 'publicDashboardView']);
+Route::post('/manual-login', [AuthController::class, 'authenticate']);
 
 Route::get('/test', function () {
     $data = ["Apel", "Pisang", "Mangga"];
