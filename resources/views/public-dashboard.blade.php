@@ -163,7 +163,28 @@
         </section>
     </main>
 
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
     <script>
+        const host = 'wss://broker.emqx.io:8084/mqtt';
+        const clientId = Math.random().toString(16).substr(2, 8);
+
+        const options = {
+            keepalive: 30,
+            clientId: clientId,
+            protocolId: 'MQTT',
+            protocolVersion: 4,
+            clean: true,
+            reconnectPeriod: 1000,
+            connectTimeout: 30 * 1000
+        }
+
+        const client = mqtt.connect(host, options);
+
+        client.on('connect', () => {
+            console.log('Berhasil Terhubung ke Broker MQTT');
+        });
+
         const inputServo = document.getElementById('inputServo');
         const valueServo = document.getElementById('valueServo');
 
