@@ -115,17 +115,17 @@
         <section>
             <div class="container">
                 <div class="header-wrapper">
-                    <h1 class="header-text">Dashboard IoT</h1>
+                    <h1 class="header-text">Dashboard IoT <span id="status">Terputus</span></h1>
                 </div>
 
                 <div class="card-wrapper">
                     <div class="card">
                         <h3>Suhu</h3>
-                        <p>25°C</p>
+                        <p><span id="suhu">?</span>°C</p>
                     </div>
                     <div class="card">
                         <h3>Kelembapan</h3>
-                        <p>60%</p>
+                        <p><span id="kelembapan">?</span>%</p>
                     </div>
                     <div class="card">
                         <h3>Posisi Servo</h3>
@@ -183,7 +183,20 @@
 
         client.on('connect', () => {
             console.log('Berhasil Terhubung ke Broker MQTT');
+            document.getElementById('status').innerHTML = 'Terhubung';
+            console.log(clientId);
+            client.subscribe("kelasiot/#", {qos: 1});
         });
+
+        client.on('message', (topic, message) => {
+            if(topic == "kelasiot/suhu"){
+                document.getElementById('suhu').innerHTML = message;
+            }
+
+            if(topic == "kelasiot/kelembapan"){
+                document.getElementById('kelembapan').innerHTML = message;
+            }
+        })
 
         const inputServo = document.getElementById('inputServo');
         const valueServo = document.getElementById('valueServo');
