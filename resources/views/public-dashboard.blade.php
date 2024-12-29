@@ -129,7 +129,7 @@
                     </div>
                     <div class="card">
                         <h3>Posisi Servo</h3>
-                        <input type="range" name="slider" id="inputServo" min="0" max="180" value="90">
+                        <input type="range" name="slider" id="inputServo" onmouseup="publishServo()" min="0" max="180" value="90">
                         <p id="valueServo">90°</p>
                     </div>
                     <div class="card">
@@ -152,7 +152,7 @@
                             <tr>
                                 <td>{{ $device->serial_number }}</td>
                                 <td>
-                                    <p class="online">Online</p>
+                                    <p class="offline" id="status-{{ $device->serial_number }}">Offline</p>
                                 </td>
                             </tr>
                             @endforeach
@@ -166,12 +166,14 @@
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
     <script>
-        const host = 'wss://broker.emqx.io:8084/mqtt';
+        const host = 'wss://kelasiot.cloud.shiftr.io:443';
         const clientId = Math.random().toString(16).substr(2, 8);
 
         const options = {
             keepalive: 30,
             clientId: clientId,
+            username: 'kelasiot',
+            password: 'passwordkelasiot',
             protocolId: 'MQTT',
             protocolVersion: 4,
             clean: true,
@@ -196,6 +198,27 @@
             if(topic == "kelasiot/kelembapan"){
                 document.getElementById('kelembapan').innerHTML = message;
             }
+
+            if(topic == "kelasiot/servo"){
+                document.getElementById('inputServo').value = message;
+                document.getElementById('valueServo').innerHTML = message + '°';
+            }
+
+            if(topic == "kelasiot/lcd"){
+                document.getElementById('inputLcd').value = message;
+            }
+
+            if(topic == "kelasiot/status/123456789"){
+                document.getElementById('status-123456789').innerHTML = message;
+                
+                if(message == "Online"){
+                    document.getElementById('status-123456789').classList.remove('offline');
+                    document.getElementById('status-123456789').classList.add('online');
+                } else {
+                    document.getElementById('status-123456789').classList.add('offline');
+                    document.getElementById('status-123456789').classList.remove('online');
+                }
+            }
         })
 
         const inputServo = document.getElementById('inputServo');
@@ -209,8 +232,13 @@
         const submitBtn = document.getElementById('btnLcd');
 
         submitBtn.addEventListener('click', () => {
-            alert(inputLcd.value);
+            // alert(inputLcd.value);
+            client.publish('kelasiot/lcd', inputLcd.value, {qos: 1, retain: true});
         });
+
+        function publishServo() {
+            client.publish('kelasiot/servo', inputServo.value, {qos: 1, retain: true});
+        }
     </script>
 </body>
 </html>
